@@ -1,0 +1,77 @@
+{
+  "name": "scrabble-server",
+  "version": "0.0.1",
+  "description": "A 2-Player TCP Scrabble Judge",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps",
+    "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "keywords": [],
+  "author": "Yetman <yahiazakaria13@gmail.com>",
+  "license": "ISC",
+  "build": {
+    "appId": "com.yetman.scrabble",
+    "mac": {
+      "category": "public.app-category.games"
+    },
+    "win": {
+      "target": "zip"
+    },
+    "directories": {
+      "output": "build"
+    },
+    "files": [
+      {
+        "filter": [
+          "!.vscode${/*}", 
+          "!renderer_src${/*}", 
+          "!test${/*}", 
+          "!build${/*}", 
+          "!.gitignore", 
+          "!checkpoint*.json", 
+          "!client.js", 
+          "!config.json",
+          "!desktop.ini",
+          "!mix-manifest.json",
+          "!webpack.mix.js",
+          "!output.log",
+          "!README.md",
+          "!sowpods.txt"
+        ]
+      }
+    ],
+    "extraFiles": [
+      {
+        "filter": [
+          "config.json",
+          "sowpods.txt"
+        ]
+      }
+    ]
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0",
+    "electron": "^3.0.2",
+    "electron-builder": "^20.28.4",
+    "laravel-mix": "^2.1.14"
+  },
+  "dependencies": {
+    "dateformat": "^3.0.3",
+    "lodash": "^4.17.11",
+    "material-design-icons": "^3.0.1",
+    "seedrandom": "^2.4.4",
+    "struct-fu": "^1.2.1",
+    "tocktimer": "^1.0.12",
+    "typeface-roboto": "0.0.54",
+    "vue": "^2.5.17",
+    "winston": "^3.1.0",
+    "ws": "^6.1.0"
+  }
+}

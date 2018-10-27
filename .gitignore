@@ -1,0 +1,30 @@
+#windows
+desktop.ini
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+#vscode
+.vscode/
+
+# Dependency directories
+node_modules/
+package-lock.json
+
+#laravel mix files
+mix-manifest.json
+
+#build result
+renderer_dist/
+build/
+
+#checkpoints
+checkpoints/
