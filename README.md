@@ -2,11 +2,15 @@
 
 ## Description
 
+![Screenshot](docs/screenshot.png)
+
 This is a 2-Player TCP Scrabble Judging Server using Websockets and Electron.
 
 This project is made for the Fall 2018 Machine Intelligence Course (CMPN402/CMP402A) in Computer Engineering Program at Cairo University Faculty of Engineering.
 
 The server uses Websockets protocol version 13 as defined by RFC6455 (https://tools.ietf.org/html/rfc6455)
+
+Communication Details can found in [this document](https://docs.google.com/document/d/1xaKcgdv9gw6xSQahsckgkU7JAzRd757Ci6RZgYTfRhc/edit?usp=sharing).
 
 ## How to run and build
 
@@ -18,7 +22,7 @@ To run server, run: `npm run start`
 
 To test scrabble game code only, run: `node ./test/test-scrabble.js`
 
-To run a client, run: `node client.js [name] [port] [host]`
+To run a client, run: `node client.js [name] [port=8080] [host=127.0.0.1]`
 
 To package server, run: `npm run dist`
 

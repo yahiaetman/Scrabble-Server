@@ -22,7 +22,7 @@
       "category": "public.app-category.games"
     },
     "win": {
-      "target": "zip"
+      "target": "7z"
     },
     "directories": {
       "output": "build"
