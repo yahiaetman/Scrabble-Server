@@ -1,9 +1,7 @@
 const _ = require('lodash');
-const path = require('path');
 const fs = require('fs');
 const seedrandom = require('seedrandom');
 const Tock = require('tocktimer');
-const { app } = require('electron');
 const { timeparse, timeformat } = require('./utils/time');
 const ScrabbleUtils = require('./utils/scrabble-utils');
 const { MessageTypes } = require('./utils/communication-enums');

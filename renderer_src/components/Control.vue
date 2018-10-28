@@ -15,7 +15,7 @@
         </div>
         <div class="conn-player-2 connection">
             <template v-if="clients[1].connected">
-                <i class="material-icons close-connection" v-if="!running"  @click="disconnect(0)">close</i>
+                <i class="material-icons close-connection" v-if="!running"  @click="disconnect(1)">close</i>
                 <div v-else></div>
                 <span class="team-name">{{ clients[1].name || clients[1].ip }}</span>
                 <span class="player-order">PLAYER 2</span>

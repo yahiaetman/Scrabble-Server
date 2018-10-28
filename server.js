@@ -1,9 +1,8 @@
 const _ = require('lodash');
-const path = require('path');
 const fs = require('fs');
 const dateFormat = require('dateformat');
-const { timeformat } = require('./utils/time');
-const { app, ipcMain } = require('electron');
+const { timeparse, timeformat } = require('./utils/time');
+const { ipcMain } = require('electron');
 const WebSocket = require('ws');
 const winston = require('winston');
 const ScrabbleUtils = require('./utils/scrabble-utils');
@@ -22,16 +21,20 @@ const EventTypes = {
     CONNECT: 0,
     CLOSE: 1,
     MESSAGE: 2,
-    UI: 3,
-    END: 4
+    START: 3,
+    END: 4,
+    DISCONNECT: 5,
+    SWAP: 6
 }
 
 class Server {
     constructor(window){
+        //Generate Logs and Checkpoints folder if not exists
         for(let dir of ['./logs/', './checkpoints/'])
             if (!fs.existsSync(dir))
                 fs.mkdirSync(dir);
 
+        //Create a logger that outputs in log file named using the current timestamp
         this.logger = winston.createLogger({
             format: winston.format.combine(
                 winston.format.timestamp(),
@@ -42,22 +45,23 @@ class Server {
             ]
         });
 
-        this.logger.info("**************************************************************");
-        this.logger.info("**************************************************************");
-        this.logger.info("**************************************************************");
         this.logger.info("Starting Application ...");
 
         this.window = window;
-        this.closing = false;
+        this.closing = false; //A Flag that is true only when the application is closing 
 
+        //Set Event Listeners for UI Events
         ipcMain.on("swap", (event, data)=>{
-            this.processEvent({type: EventTypes.UI, command: "swap", data:data});
+            this.logger.info("User clicked swap");
+            this.processEvent({type: EventTypes.SWAP, data:data});
         });
         ipcMain.on("start", (event, data)=>{
-            this.processEvent({type: EventTypes.UI, command: "start", data:data});
+            this.logger.info("User clicked start");
+            this.processEvent({type: EventTypes.START, source: "user", data:data});
         });
         ipcMain.on("disconnect", (event, data)=>{
-            this.processEvent({type: EventTypes.UI, command: "disconnect", data:data});
+            this.logger.info("User clicked disconnect");
+            this.processEvent({type: EventTypes.DISCONNECT, source: "user", data:data});
         });
         ipcMain.on("stop", (event, data)=>{
             this.logger.info("User clicked stop");
@@ -103,7 +107,7 @@ class Server {
                 ws.isAlive = false;
                 ws.ping(() => {});
             });
-        }, 1000);
+        }, timeparse(this.config["ping interval"]));
         
 
         this.game = new Scrabble(this.config, () => {
@@ -183,7 +187,7 @@ class Server {
                 historyList.push({
                     player: 3,
                     turn: '-',
-                    text: 'Game Start',
+                    text: 'Game End',
                     result: result.end?(_.isNull(result.winner)?"Draw":`Player${result.winner+1} won`):""
                 });
             } else if(move.type == MessageTypes.PASS){
@@ -365,12 +369,12 @@ class Server {
             }
             return;
         }
-        if(event.type == EventTypes.UI && event.command=="disconnect"){
+        if(event.type == EventTypes.DISCONNECT){
             let index = event.data.index;
             let client = this.clients[index];
-            this.logger.info(`User disconnected "${client.name}" IP:${client.ip}`);
+            this.logger.info(`Disconnected "${client.name}" IP:${client.ip}`);
             if(client.connected)
-                client.ws.close(1000, "User disconnected you");
+                client.ws.close(1000, "Server disconnected you");
             return;
         }
 
@@ -392,9 +396,14 @@ class Server {
                     this.logger.info(`A new client ${client.ip} is connected`);
                     this.clients[index] = client;
                     client.ws.on('message', message => {
+                        this.logger.info("Received Buffer: " + [...event.message]);
                         this.processEvent({type: EventTypes.MESSAGE, message: message, client: client});
                     });
+                    client.ws.on('error', (error) => {
+                        this.logger.error(`Websocket Error for Client${client.index}: ${error}`);
+                    });
                     client.ws.on('close', (code, reason) => {
+                        this.logger.info(`Received Close Event: Code ${code} - ${reason} `);
                         this.processEvent({type: EventTypes.CLOSE, code: code, reason: reason, client: client});
                     });
                     client.ws.send(Structs.TypeStruct.pack({type: MessageTypes.NAME}));
@@ -413,35 +422,31 @@ class Server {
                     this.updateStatusUI("Hello, " + event.client.name + (this.state == States.READY? ", We are now ready":""));
                 }
             }
-
         }else if(this.state == States.READY){
-            if(event.type == EventTypes.UI){
-                if(event.command == "swap"){
-                    this.logger.info("User swapped first and second player");
-                    this.clients.reverse()
-                    for(let i = 0; i < 2; i++) this.clients[i].index = i;
-                    this.updateServerUI();
-                } else if(event.command == "start"){
-                    if(event.data.useCheckPoint && !_.isNull(this.checkpoint)){
-                        this.logger.info("Starting game from a Checkpoint");
-                        this.game.startFromCheckpoint(this.checkpoint);
-                    } else {
-                        this.logger.info("Starting game from seed: " + event.data.seed);
-                        this.removeCheckpoint();
-                        this.game.start(event.data.seed);
-                        this.checkpoint = this.game.currentState;
-                    }
-                    this.sendStartMessages();
-
-                    this.state = States.IDLE;
-                    this.updateServerUI();
-                    this.updateGameUI();
-                    this.updateStatusUI("Game Started");
+            if(event.type == EventTypes.SWAP){
+                this.logger.info("Swapping first and second player");
+                this.clients.reverse()
+                for(let i = 0; i < 2; i++) this.clients[i].index = i;
+                this.updateServerUI();
+            } else if(event.type == EventTypes.START){
+                if(event.data.useCheckPoint && !_.isNull(this.checkpoint)){
+                    this.logger.info("Starting game from a Checkpoint");
+                    this.game.startFromCheckpoint(this.checkpoint);
+                } else {
+                    this.logger.info("Starting game from seed: " + event.data.seed);
+                    this.removeCheckpoint();
+                    this.game.start(event.data.seed);
+                    this.checkpoint = this.game.currentState;
                 }
+                this.sendStartMessages();
+
+                this.state = States.IDLE;
+                this.updateServerUI();
+                this.updateGameUI();
+                this.updateStatusUI("Game Started");
             }
         }else if(this.state == States.IDLE){
             if(event.type == EventTypes.MESSAGE){
-                this.logger.info("Received Buffer: " + [...event.message]);
                 if(event.client.index == this.game.currentState.current){
                     switch(event.message[0]){
                         case MessageTypes.PASS: {
@@ -458,9 +463,14 @@ class Server {
                             break;
                         }
                         case MessageTypes.EXCHANGE: {
-                            let move = Structs.TypeWithTilesStruct.unpack(event.message);
-                            this.logger.info(`Player ${event.client.index+1} sent an EXCHANGE for ${ScrabbleUtils.convertRawTilesToString(move.tiles)}`);
-                            let result = this.game.apply(move);
+                            let move, result;
+                            try {
+                                move = Structs.TypeWithTilesStruct.unpack(event.message);
+                                result = this.game.apply(move);
+                                this.logger.info(`Player ${event.client.index+1} sent an EXCHANGE for ${ScrabbleUtils.convertRawTilesToString(move.tiles)}`);
+                            } catch (error) {
+                                result = {valid: false, reason: error.toString()};
+                            }
                             if(result.valid){
                                 this.logger.info(`Move is valid and Server will return ${ScrabbleUtils.convertRawTilesToString(result.tiles)}`);
                                 this.getOtherClient().ws.send(Structs.TypeWithTilesStruct.pack({
@@ -486,9 +496,14 @@ class Server {
                             break;
                         }
                         case MessageTypes.PLAY: {
-                            let move = Structs.PlayStruct.unpack(event.message);
-                            this.logger.info(`Player ${event.client.index+1} sent an PLAY: ${String.fromCharCode(64+move.col)}${move.row} ${move.dir==0?'RIGHT':'DOWN'} ${ScrabbleUtils.convertPlayedTilesToString(move.tiles)}`);
-                            let result = this.game.apply(move);
+                            let move, result;
+                            try {
+                                move = Structs.PlayStruct.unpack(event.message);
+                                result = this.game.apply(move);
+                                this.logger.info(`Player ${event.client.index+1} sent an PLAY: ${String.fromCharCode(64+move.col)}${move.row} ${move.dir==0?'RIGHT':'DOWN'} ${ScrabbleUtils.convertPlayedTilesToString(move.tiles)}`);
+                            } catch (error) {
+                                result = {valid: false, reason: error.toString()};
+                            }
                             if(result.valid){
                                 this.logger.info(`Move is valid and Server will await a challenge from the other side`);
                                 if(result.invalidWords.length > 0){
@@ -518,7 +533,6 @@ class Server {
                 }
             }
         }else if(this.state == States.AWAIT_CHALLENGE){
-            this.logger.info("Received Buffer: " + [...event.message]);
             if(event.type == EventTypes.MESSAGE){
                 if(event.client.index == this.game.currentState.current){
                     switch(event.message[0]){
