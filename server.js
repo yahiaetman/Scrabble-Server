@@ -41,8 +41,15 @@ class Server {
                 winston.format.printf(info =>  `${info.timestamp} ${info.level}: ${info.message}`)
             ),
             transports: [
-                new winston.transports.File({ filename: `./logs/output-${dateFormat(new Date(), "yyyy-mm-dd-h-MM-ss")}.log`, handleExceptions: true })
-            ]
+                new winston.transports.File({ 
+                    filename: `./logs/output-${dateFormat(new Date(), "yyyy-mm-dd-h-MM-ss")}.log`, 
+                    handleExceptions: true 
+                })
+            ],
+            exitOnError: (err) => {
+                this.updateStatusUI(`${err.name} occurred. See logs for more info`);
+                return false;
+            }
         });
 
         this.logger.info("Starting Application ...");
@@ -396,8 +403,12 @@ class Server {
                     this.logger.info(`A new client ${client.ip} is connected`);
                     this.clients[index] = client;
                     client.ws.on('message', message => {
-                        this.logger.info("Received Buffer: " + [...event.message]);
-                        this.processEvent({type: EventTypes.MESSAGE, message: message, client: client});
+                        if(typeof message === 'string'){
+                            this.logger.warn("Received a String Message: " + message);
+                        } else {
+                            this.logger.info("Received: " + [...message]);
+                            this.processEvent({type: EventTypes.MESSAGE, message: message, client: client});
+                        }
                     });
                     client.ws.on('error', (error) => {
                         this.logger.error(`Websocket Error for Client${client.index}: ${error}`);
