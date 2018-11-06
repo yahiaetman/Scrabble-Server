@@ -5,7 +5,7 @@ const readline = require('readline');
 const { MessageTypes } = require('../utils/communication-enums');
 
 function displayGameEnd(){
-    let scores = game.getScores();
+    let { scores } = game.getCurrentInfo();
     console.log(`\nPlayer 1: ${scores[0]}\nPlayer 2: ${scores[1]}`);
     if(scores[0] > scores[1]){
         console.log("Player 1 won");
@@ -17,13 +17,31 @@ function displayGameEnd(){
     console.log("GG!")
 }
 
-let game = new Scrabble(config, () => {
-    console.log("Time Out");
-    game.end();
-    displayGameEnd();
-    process.exit(0);
+let game = new Scrabble(config,  {
+    timeoutCallback: () => {
+        console.log("Time Out");
+        game.end();
+        displayGameEnd();
+        process.exit(0);
+    },
+    challengeTimeoutCallback: () => {
+        console.log("Challenge time Out");
+        game.challengeTimer.stop();
+        let move = {type: MessageTypes.NO_CHALLENGE};
+        let result = game.apply(move);
+        console.log(game.toString());    
+        game.timer.pause();
+        if(result.end){
+            console.log("Tiles Finished");
+            game.end();
+            displayGameEnd();
+            process.exit(0);
+        } else {
+            rl.prompt();
+        }
+    }
 });
-game.start("Hello");
+game.start(process.argv[2] || '');
 console.log(game.toString());
 
 
@@ -70,13 +88,22 @@ rl.on('line', (line) => {
         break;
     }
     if(move != null){
+        if(move.type == MessageTypes.NO_CHALLENGE || move.type == MessageTypes.CHALLENGE)
+            game.challengeTimer.stop();
+        else
+            game.timer.pause();
         let result = game.apply(move);
         if(result.valid){
             console.log(game.toString());    
-            if(move.type == 4 && result.invalidWords.length > 0){
-                for(let word of result.invalidWords){
-                    console.log(`INVALID WORD: ${word.word} (${String.fromCharCode(65+word.col-1) + word.row.toString() + (word.dir?"D":"R")})`);
+            if(move.type == 4){
+                if(result.invalidWords.length > 0){
+                    for(let word of result.invalidWords){
+                        console.log(`INVALID WORD: ${word.word} (${String.fromCharCode(65+word.col-1) + word.row.toString() + (word.dir?"D":"R")})`);
+                    }
                 }
+                game.challengeTimer.start(game.challengeTimespan);
+            } else {
+                game.timer.pause();
             }
             if(result.end){
                 console.log("Tiles Finished");
@@ -86,8 +113,8 @@ rl.on('line', (line) => {
             }      
         } else {
             console.log(`Invalid Move: ${result.reason}`);
+            game.timer.pause();
         }
-    
     }
     rl.prompt();
 }).on('close', () => {

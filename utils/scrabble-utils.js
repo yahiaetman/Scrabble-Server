@@ -54,18 +54,18 @@ const ScrabbleUtils = {
     isTileBlank,
     convertPlayableTileToString,
 
-    removeFromHand(tiles, hand) {
+    removeFromHand(tiles, rack) {
         let valid = true;
         _.each(tiles, tile => {
-            hand[tile] = _.get(hand, tile, 0) - 1;
-            if(hand[tile] < 0) valid = false;
+            rack[tile] = _.get(rack, tile, 0) - 1;
+            if(rack[tile] < 0) valid = false;
         });
         return valid;
     },
     
-    addToHand(tiles, hand) {
+    addToHand(tiles, rack) {
         _.each(tiles, tile => {
-            hand[tile] = _.get(hand, tile, 0) + 1;
+            rack[tile] = _.get(rack, tile, 0) + 1;
         });
     },
     
@@ -86,7 +86,7 @@ const ScrabbleUtils = {
                 board[position.row][position.col] = tiles[index];
                 word.push({
                     tile: board[position.row][position.col],
-                    src: 'hand',
+                    src: 'rack',
                     position: position
                 });
                 index++;
@@ -165,8 +165,8 @@ const ScrabbleUtils = {
         return boardStr;
     },
 
-    convertHandToString(hand){
-        return _.flatten(_.map(_.sortBy(_.keys(hand)), tile => _.times(hand[tile], _.constant(tileCodesToNames[tile])))).join();
+    convertHandToString(rack){
+        return _.flatten(_.map(_.sortBy(_.keys(rack)), tile => _.times(rack[tile], _.constant(tileCodesToNames[tile])))).join();
     },
 
     convertRawTilesToString(tiles){

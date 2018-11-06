@@ -29,7 +29,7 @@ const StatesNames = {
 };
 
 let history = [];
-let current = {};
+let current = {board: null, rack: null};
 let state = States.INIT;
 
 function displayTime(info){
@@ -44,7 +44,7 @@ function displayScore(info){
 
 function displayCurrentGameState(){
     console.log(ScrabbleUtils.convertBoardToString(current.board))
-    console.log("your Hand: " + ScrabbleUtils.convertHandToString(current.hand));
+    console.log("your rack: " + ScrabbleUtils.convertHandToString(current.rack));
 }
 
 let name = process.argv[2] || `Client${process.pid}`;
@@ -105,7 +105,7 @@ ws.on('message', data => {
         if(data[0] == MessageTypes.START){
             let info = Structs.StartStruct.unpack(data);
             current.board = _.chunk(info.board, 15);
-            current.hand = _.countBy(info.tiles);
+            current.rack = _.countBy(info.tiles);
             history.push(current);
             console.log("Game Start");
             displayScore(info);
@@ -138,6 +138,7 @@ ws.on('message', data => {
             current = _.cloneDeep(current);
             ScrabbleUtils.updateBoard(_.filter(info.tiles, tile => tile != 0), {col: info.col-1, row: info.row-1}, info.dir, current.board);
             displayCurrentGameState();
+            console.log(`Available time for challenge: ${timeformat(info.challenge)}`);
             state = States.AWAIT_AGENT_CHALLENGE;
         }
     } else if(state == States.AWAIT_EXCHANGE_RESPONSE){
@@ -148,7 +149,7 @@ ws.on('message', data => {
         } else if(data[0] == MessageTypes.EXCHANGE){
             console.log("Exchanged Accepted.");
             let info = Structs.TypeWithTilesStruct.unpack(data);
-            ScrabbleUtils.addToHand(_.filter(info.tiles, tile => tile != 0), current.hand);
+            ScrabbleUtils.addToHand(_.filter(info.tiles, tile => tile != 0), current.rack);
             displayCurrentGameState();
             state = States.IDLE;
         }
@@ -161,7 +162,7 @@ ws.on('message', data => {
         } else if(data[0] == MessageTypes.NO_CHALLENGE){
             console.log("Play Accepted Without Challenge.");
             let info = Structs.TypeWithTilesStruct.unpack(data);
-            ScrabbleUtils.addToHand(_.filter(info.tiles, tile => tile != 0), current.hand);
+            ScrabbleUtils.addToHand(_.filter(info.tiles, tile => tile != 0), current.rack);
             displayCurrentGameState();
             state = States.IDLE;
         } else if(data[0] == MessageTypes.CHALLENGE_ACCEPTED){
@@ -173,7 +174,15 @@ ws.on('message', data => {
             console.log("Play Accepted with Rejected Challenge.");
             let info = Structs.TypeWithTilesAndTimeStruct.unpack(data);
             displayTime(info);
-            ScrabbleUtils.addToHand(_.filter(info.tiles, tile => tile != 0), current.hand);
+            ScrabbleUtils.addToHand(_.filter(info.tiles, tile => tile != 0), current.rack);
+            displayCurrentGameState();
+            state = States.THINKING;
+        }
+    } else if(state == States.AWAIT_AGENT_CHALLENGE){
+        if(data[0] == MessageTypes.NO_CHALLENGE){
+            console.log("Challenge Time Out.");
+            let info = Structs.TypeWithTimeStruct.unpack(data);
+            displayTime(info);
             displayCurrentGameState();
             state = States.THINKING;
         }
@@ -245,14 +254,14 @@ rl.on('line', (line) => {
                 ws.send(Structs.TypeWithTilesStruct.pack(move));
                 history.push(current);
                 current = _.cloneDeep(current);
-                ScrabbleUtils.removeFromHand(_.filter(move.tiles, tile => tile != 0), current.hand);
+                ScrabbleUtils.removeFromHand(_.filter(move.tiles, tile => tile != 0), current.rack);
                 state = States.AWAIT_EXCHANGE_RESPONSE;
             } else if(move.type == MessageTypes.PLAY){
                 ws.send(Structs.PlayStruct.pack(move));
                 history.push(current);
                 current = _.cloneDeep(current);
                 let filteredTiles = _.filter(move.tiles, tile => tile != 0);
-                ScrabbleUtils.removeFromHand(filteredTiles, current.hand);
+                ScrabbleUtils.removeFromHand(filteredTiles, current.rack);
                 ScrabbleUtils.updateBoard(filteredTiles, {col: move.col-1, row: move.row-1}, move.dir, current.board);
                 displayCurrentGameState();
                 state = States.AWAIT_PLAY_RESPONSE;

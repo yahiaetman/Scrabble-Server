@@ -9,7 +9,7 @@
             <history :history="history"/>
             <board :board="board"/>
             <control :ready="ready" :running="running" :clients="clients" :has-check-point="hasCheckPoint"/>
-            <score-board :status="status" :time="time" :current="current" :players="players"/>
+            <score-board :status="status" :time="time" :current="current" :challenge-time="challengeTime" :awaiting-challenge="awaitingChallenge" :players="players"/>
         </div>
     </div>
 </template>
@@ -50,9 +50,11 @@ export default {
             ],
             time: 0,
             current: 0,
+            challengeTime: 0,
+            awaitingChallenge: false,
             players: [
-                {name:"----", ip: "127.0.0.1", time: 0, score: 0},
-                {name:"----", ip: "127.0.0.1", time: 0, score: 0}
+                {name:"----", time: 0, score: 0},
+                {name:"----", time: 0, score: 0}
             ],
             history: []
         }
@@ -72,6 +74,8 @@ export default {
             this.time = data.time;
             this.current = data.current;
             this.players = data.players;
+            this.challengeTime = data.challengeTime;
+            this.awaitingChallenge = data.awaitingChallenge;
         });
         ipc.on('update-status-ui', (event, data) => {
             this.status = data.text;

@@ -3,18 +3,17 @@
         <div class="status-player-1">
             <span class="player-turn player-turn-1">PLAYER 1</span>
             <span class="player-name">{{players[0].name}}</span>
-            <span class="player-ip">{{players[0].ip}}</span>
             <span class="player-score">{{players[0].score}} Pts</span>
             <span :class="['player-time', {'player-time-current': current==0}]">{{players[0].time | displayTime}}</span>
         </div>
         <div class="status-player-2">
             <span class="player-turn player-turn-2">PLAYER 2</span>
             <span class="player-name">{{players[1].name}}</span>
-            <span class="player-ip">{{players[1].ip}}</span>
             <span class="player-score">{{players[1].score}} Pts</span>
             <span :class="['player-time', {'player-time-current': current==1}]">{{players[1].time | displayTime}}</span>
         </div>
         <div class="time">{{time | displayTime}}</div>
+        <div class="challenge-time">{{challengeTime | displayTime | showIfElse(awaitingChallenge, "--:--")}}</div>
         <div class="status">{{status}}</div>
     </div>
 </template>
@@ -25,18 +24,23 @@ export default {
         status: {default:""},
         time: {default: 0},
         current: {default: 0},
+        challengeTime: {default: 0},
+        awaitingChallenge: {default: false},
         players: {default: [
-            {name:"----", ip: "127.0.0.1", time: 0, score: 0},
-            {name:"----", ip: "127.0.0.1", time: 0, score: 0}
+            {name:"----", time: 0, score: 0},
+            {name:"----", time: 0, score: 0}
         ]}
     },
     filters:{
         displayTime: function(time){
             let sign = Math.sign(time);
-            time = Math.trunc(time * sign);
-            let s = Math.trunc(time/1000)%60;
-            let m = Math.trunc(time/60000);
+            time = Math.round(time * sign / 1000);
+            let s = Math.trunc(time%60);
+            let m = Math.trunc(time/60);
             return `${sign<0?'-':''}${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`
+        },
+        showIfElse(text, condition, otherwise){
+            return condition?text:otherwise;
         }
     }
 }
@@ -49,10 +53,11 @@ export default {
     grid-area: score;
     display: grid;
     grid-template-columns: 40% 20% 40%;
-    grid-template-rows: 50% 50%;
+    grid-template-rows: 1fr 1fr 20px;
     grid-template-areas: 
     "player-1 time player-2"
-    "player-1 status player-2";
+    "player-1 challenge-time player-2"
+    "status status status";
     gap: 0;
 }
 
@@ -83,23 +88,32 @@ export default {
     font-weight: 100;
 }
 
+.challenge-time {
+    grid-area: challenge-time;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 32px;
+    font-weight: 100;
+}
+
 .status {
     grid-area: status;
     display: table-cell;
     text-align: center;
     vertical-align: bottom;
     font-family: 'Roboto', sans-serif;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 100;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 95%;
-    max-height: 95%;
+    //max-width: 95%;
+    //max-height: 95%;
+    //padding: 2.5%;
 }
 
 .player-turn {
     font-family: 'Roboto', sans-serif;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 300;
     border-radius: 5px;
     padding: 2px;
@@ -124,21 +138,15 @@ export default {
     max-width: 95%;
 }
 
-.player-ip {
-    font-family: 'Roboto', sans-serif;
-    font-size: 12px;
-    font-weight: 100;
-}
-
 .player-score {
     font-family: 'Roboto', sans-serif;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 100;
 }
 
 .player-time {
     font-family: 'Roboto', sans-serif;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 300;
     padding: 2px;
 }

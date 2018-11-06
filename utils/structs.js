@@ -67,6 +67,7 @@ const PlayStruct = stfu.struct([
 
 const PlayWithTimeStruct = stfu.struct([
     PlayStruct,
+    stfu.int32("challenge"),
     TimeStruct
 ]);
 

@@ -77,9 +77,10 @@
         "Z":1,
         "_":2
     },
-    "times": ["10:00", "10:00"],
+    "starting timespans": ["10:00", "10:00"],
+    "challenge timespan": "00:05",
     "penalty":{
-        "points":10,
+        "points": 10,
         "every":"01:00"
     },
     "dictionary": "sowpods.txt"
