@@ -180,7 +180,7 @@ const ScrabbleUtils = {
       let wordScore = 0;
       word.forEach((letter) => {
         const { tile } = letter;
-        let tileScore = tile > 100 ? 0 : tileScores[tile]; // If tile is blank, then its score is 0
+        let tileScore = tile > 100 ? tileScores[100] : tileScores[tile]; // If tile is blank, then its score is usually 0
         const squareType = design[letter.position.row][letter.position.col];
         switch (squareType) {
           // Double and Triple Letter Squares only affect the current tile

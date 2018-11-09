@@ -34,12 +34,12 @@ class Scrabble {
     // Convert score dictionary in config to use tilecodes instead of tilenames
     this.tileScores = _.zipObject(
       ScrabbleUtils.tileCodes,
-      _.map(ScrabbleUtils.tileNames, name => config.letterScores[name]),
+      _.map(ScrabbleUtils.tileNames, name => config['tile scores'][name]),
     );
     // Convert frequency dictionary in config to use tilecodes instead of tilenames
     this.tileFrequencies = _.zipObject(
       ScrabbleUtils.tileCodes,
-      _.map(ScrabbleUtils.tileNames, name => config.letterFrequencies[name]),
+      _.map(ScrabbleUtils.tileNames, name => config['tile frequencies'][name]),
     );
     // Parse starting time for each player
     this.times = _.map(config['starting timespans'], timeparse);

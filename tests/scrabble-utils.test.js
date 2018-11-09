@@ -544,7 +544,9 @@ describe('Word Expand Tests', () => {
 });
 
 describe('Score Calculation Tests', () => {
-  const scores = { 10: 1, 20: 2, 5: 3 };
+  const scores = {
+    10: 1, 20: 2, 5: 3, 100: 0,
+  };
   // 0: Normal, 1: Double Letter, 2: Triple Letter, 3: Double Word, 4: Triple Word
   const design1 = [
     [2, 0, 0, 0, 2],

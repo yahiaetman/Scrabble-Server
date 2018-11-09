@@ -55,7 +55,7 @@ class Server {
       ),
       transports: [
         new winston.transports.File({
-          filename: `./logs/output-${dateFormat(new Date(), 'yyyy-mm-dd-h-MM-ss')}.log`,
+          filename: `./logs/output-${dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss')}.log`,
           handleExceptions: true,
         }),
       ],
@@ -216,7 +216,7 @@ class Server {
       this.logger.info('No checkpoint file found, so no file will be removed');
     }
     if (saveFinal && !_.isNull(this.game.currentState)) {
-      const filepath = `./checkpoints/final-${dateFormat(new Date(), 'yyyy-mm-dd-h-MM-ss')}.json`;
+      const filepath = `./checkpoints/final-${dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss')}.json`;
       this.logger.info(`Saving the final state into: ${filepath}`);
       fs.writeFile(filepath, JSON.stringify(this.game.currentState), (err) => {
         if (err) this.logger.error(`Counld not save final state: ${err}`);
