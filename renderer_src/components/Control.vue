@@ -1,64 +1,91 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-undef */
 <template>
-    <div class="control">
-        <div class="conn-player-1 connection">
-            <template v-if="clients[0].connected">
-                <i class="material-icons close-connection" v-if="!running" @click="disconnect(0)">close</i>
-                <div v-else></div>
-                <span class="team-name">{{ clients[0].name || clients[0].ip }}</span>
-                <span class="player-order">PLAYER 1</span>
-            </template>
-            <template v-else>
-                <div></div>
-                <i class="material-icons no-connection">sync</i>
-                <div></div>
-            </template>
-        </div>
-        <div class="conn-player-2 connection">
-            <template v-if="clients[1].connected">
-                <i class="material-icons close-connection" v-if="!running"  @click="disconnect(1)">close</i>
-                <div v-else></div>
-                <span class="team-name">{{ clients[1].name || clients[1].ip }}</span>
-                <span class="player-order">PLAYER 2</span>
-            </template>
-            <template v-else>
-                <div></div>
-                <i class="material-icons no-connection">sync</i>
-                <div></div>
-            </template>
-        </div>        
-        <div class="buttons">
-            <input type="text" name="seed" id="seed" placeholder="Enter Seed ..." class="seed-input" ref="seed">
-            <button class="control-button" @click="start(true)" v-if="hasCheckPoint && !running" :disabled="!ready">
-                <i class="material-icons">pause</i>
-            </button>
-            <button class="control-button" @click="start(false)" :disabled="!ready && !running">
-                <i class="material-icons">{{running ? "stop" : (hasCheckPoint? "autorenew" : "play_arrow")}}</i>
-            </button>
-        </div>
-        <div class="swap-button-container" v-if="ready">
-            <i class="material-icons swap-button" @click="swap">swap_horiz</i>
-        </div>
+  <div class="control">
+    <div class="conn-player-1 connection">
+      <template v-if="clients[0].connected">
+        <i
+          v-if="!running"
+          class="material-icons close-connection"
+          @click="disconnect(0)">close</i>
+        <div v-else/>
+        <span class="team-name">{{ clients[0].name || clients[0].ip }}</span>
+        <span class="player-order">PLAYER 1</span>
+      </template>
+      <template v-else>
+        <div/>
+        <i class="material-icons no-connection">sync</i>
+        <div/>
+      </template>
     </div>
+    <div class="conn-player-2 connection">
+      <template v-if="clients[1].connected">
+        <i
+          v-if="!running"
+          class="material-icons close-connection"
+          @click="disconnect(1)">close</i>
+        <div v-else/>
+        <span class="team-name">{{ clients[1].name || clients[1].ip }}</span>
+        <span class="player-order">PLAYER 2</span>
+      </template>
+      <template v-else>
+        <div/>
+        <i class="material-icons no-connection">sync</i>
+        <div/>
+      </template>
+    </div>
+    <div class="buttons">
+      <input
+        id="seed"
+        ref="seed"
+        type="text"
+        name="seed"
+        placeholder="Enter Seed ..."
+        class="seed-input">
+      <button
+        v-if="hasCheckPoint && !running"
+        :disabled="!ready"
+        class="control-button"
+        @click="start(true)">
+        <i class="material-icons">pause</i>
+      </button>
+      <button
+        :disabled="!ready && !running"
+        class="control-button"
+        @click="start(false)">
+        <i class="material-icons">{{ running ? "stop" : (hasCheckPoint? "autorenew" : "play_arrow") }}</i>
+      </button>
+    </div>
+    <div
+      v-if="ready"
+      class="swap-button-container">
+      <i
+        class="material-icons swap-button"
+        @click="swap">swap_horiz</i>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props: {clients:{}, ready:{}, running:{}, hasCheckPoint:{}},
-    methods:{
-        swap(){
-            ipc.send("swap", {});
-        },
-        start(useCheckPoint){
-            if(this.running)
-                ipc.send("stop", {});
-            else
-                ipc.send("start", {seed: this.$refs.seed.value, useCheckPoint: useCheckPoint});
-        },
-        disconnect(index){
-            ipc.send("disconnect", {index: index});
-        }
-    }
-}
+  props: {
+    clients: { type: Array, default: () => [] },
+    ready: { type: Boolean, default: false },
+    running: { type: Boolean, default: false },
+    hasCheckPoint: { type: Boolean, default: false },
+  },
+  methods: {
+    swap() {
+      window.ipc.send('swap', {});
+    },
+    start(useCheckPoint) {
+      if (this.running) { window.ipc.send('stop', {}); } else { window.ipc.send('start', { seed: this.$refs.seed.value, useCheckPoint }); }
+    },
+    disconnect(index) {
+      window.ipc.send('disconnect', { index });
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -96,6 +123,13 @@ export default {
 .close-connection {
     font-size: 12px;
     align-self: flex-end;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+.close-connection:hover {
+    color: #ffffff;
+    text-shadow: 0 0 5px #00000088;
 }
 
 .no-connection {
@@ -156,7 +190,7 @@ export default {
 }
 
 .seed-input {
-    flex: 1 1 auto; 
+    flex: 1 1 auto;
     width:100px;
     border: 1px solid $border-color;
     border-radius: 5px 0 0 5px;
@@ -176,7 +210,7 @@ export default {
 }
 
 .control-button {
-    flex: 0 1 auto; 
+    flex: 0 1 auto;
     width:48px;
     background-color: transparent;
     border: 1px solid $border-color;

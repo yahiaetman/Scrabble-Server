@@ -1,4 +1,6 @@
-let mix = require('laravel-mix');
+/* eslint-disable max-len */
+// eslint-disable-next-line import/no-extraneous-dependencies
+const mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------
@@ -12,7 +14,7 @@ let mix = require('laravel-mix');
  */
 
 mix.js('renderer_src/app.js', 'renderer_dist/').sourceMaps();
-mix.extract(["vue", "lodash", "seedrandom", "struct-fu"]);
+mix.extract(['vue', 'lodash', 'seedrandom', 'struct-fu']);
 mix.sass('renderer_src/app.scss', 'renderer_dist/');
 
 mix.setPublicPath('renderer_dist/');

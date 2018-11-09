@@ -1,120 +1,148 @@
 <template>
-    <div class="board">
-        <div class="letters"></div>
-        <div class="board-div">
-            <table class="board-table">
-                <thead>
-                    <th></th>
-                    <th v-for="i in 15" :key="'c'+i">{{String.fromCharCode(65+i-1)}}</th>
-                    <th></th>
-                </thead>
-                <tbody>
-                    <tr v-for="i in 15" :key="'r'+i">
-                        <th>{{i}}</th>
-                        <td v-for="j in 15" :key="'d'+i+j" :class="classes[design[i-1][j-1]]">
-                            <i class="material-icons md-dark md-18 center-star" v-if="i==8 && j==8">star</i>
-                            <transition name="bounce">
-                                <button :class="['tile',{'underlined':isUnderLined(board[i-1][j-1])}]" v-if="isLetter(board[i-1][j-1])">
-                                    {{getLetter(board[i-1][j-1])}}
-                                </button>
-                            </transition>
-                        </td>
-                        <th>{{i}}</th>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <th></th>
-                    <th v-for="i in 15" :key="'f'+i">{{String.fromCharCode(65+i-1)}}</th>
-                    <th></th>
-                </tfoot>
-            </table>
-        </div>
-        <div class="idx">
-            <table class="idx-table">
-                <tbody>
-                    <tr>
-                        <td class="idx-color double-letter">Double Letter</td>
-                    </tr>
-                    <tr>
-                        <td class="idx-color triple-letter">Triple Letter</td>
-                    </tr>
-                    <tr>
-                        <td class="idx-color double-word">Double Word</td>
-                    </tr>
-                    <tr>
-                        <td class="idx-color triple-word">Triple Word</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+  <div class="board">
+    <div class="letters"/>
+    <div class="board-div">
+      <table class="board-table">
+        <thead>
+          <th/>
+          <th
+            v-for="(square, j) in design[0]"
+            :key="'c'+j">{{ String.fromCharCode(65+j) }}</th>
+          <th/>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(row, i) in design"
+            :key="'r'+i">
+            <th>{{ i + 1 }}</th>
+            <td
+              v-for="(square, j) in row"
+              :key="'d'+i+j"
+              :class="classes[square]">
+              <i
+                v-if="isCenter(i, j)"
+                class="material-icons md-dark md-18 center-star">star</i>
+              <transition name="bounce">
+                <button
+                  v-if="isLetter(board[i][j])"
+                  :class="['tile',{'underlined':isUnderLined(board[i][j])}]">
+                  {{ getLetter(board[i][j]) }}
+                </button>
+              </transition>
+            </td>
+            <th>{{ i + 1 }}</th>
+          </tr>
+        </tbody>
+        <tfoot>
+          <th/>
+          <th
+            v-for="(square, j) in design[0]"
+            :key="'c'+j">{{ String.fromCharCode(65+j) }}</th>
+          <th/>
+        </tfoot>
+      </table>
     </div>
+    <div class="idx">
+      <table class="idx-table">
+        <tbody>
+          <tr>
+            <td class="idx-color double-letter">Double Letter</td>
+          </tr>
+          <tr>
+            <td class="idx-color triple-letter">Triple Letter</td>
+          </tr>
+          <tr>
+            <td class="idx-color double-word">Double Word</td>
+          </tr>
+          <tr>
+            <td class="idx-color triple-word">Triple Word</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
-    props: {
-        board:{
-            default:[
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            ]
-        }
+  props: {
+    board: {
+      type: Array,
+      default: () => [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ],
     },
-    data(){
-        return {
-            design: [
-                [4,0,0,1,0,0,0,4,0,0,0,1,0,0,4],
-                [0,3,0,0,0,2,0,0,0,2,0,0,0,3,0],
-                [0,0,3,0,0,0,1,0,1,0,0,0,3,0,0],
-                [1,0,0,3,0,0,0,1,0,0,0,3,0,0,1],
-                [0,0,0,0,3,0,0,0,0,0,3,0,0,0,0],
-                [0,2,0,0,0,2,0,0,0,2,0,0,0,2,0],
-                [0,0,1,0,0,0,1,0,1,0,0,0,1,0,0],
-                [4,0,0,1,0,0,0,3,0,0,0,1,0,0,4],
-                [0,0,1,0,0,0,1,0,1,0,0,0,1,0,0],
-                [0,2,0,0,0,2,0,0,0,2,0,0,0,2,0],
-                [0,0,0,0,3,0,0,0,0,0,3,0,0,0,0],
-                [1,0,0,3,0,0,0,1,0,0,0,3,0,0,1],
-                [0,0,3,0,0,0,1,0,1,0,0,0,3,0,0],
-                [0,3,0,0,0,2,0,0,0,2,0,0,0,3,0],
-                [4,0,0,1,0,0,0,4,0,0,0,1,0,0,4],
-            ],
-            classes:{
-                0:"",
-                1:"double-letter",
-                2:"triple-letter",
-                3:"double-word",
-                4:"triple-word"
-            },
-        }
+    design: {
+      type: Array,
+      default: () => [
+        [4, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 4],
+        [0, 3, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 3, 0],
+        [0, 0, 3, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 0, 0],
+        [1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 1],
+        [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
+        [0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0],
+        [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
+        [4, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 4],
+        [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
+        [0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0],
+        [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
+        [1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 1],
+        [0, 0, 3, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 0, 0],
+        [0, 3, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 3, 0],
+        [4, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 4],
+      ],
     },
-    methods: {
-        isLetter(id){
-            return (id >= 1 && id <= 26) || (id >= 101 && id <= 126);
-        },
-        getLetter(id){
-            if(id >= 101 && id <= 126) return String.fromCharCode(97+id-101);
-            else if(id >= 1 && id <= 26) return String.fromCharCode(65+id-1);
-            else return "";
-        },
-        isUnderLined(id){
-            return id >= 100;
-        }
-    }
-}
+  },
+  data() {
+    return {
+      classes: {
+        0: '',
+        1: 'double-letter',
+        2: 'triple-letter',
+        3: 'double-word',
+        4: 'triple-word',
+      },
+    };
+  },
+  computed: {
+    size() {
+      return {
+        rows: this.design.length,
+        columns: this.design.length === 0 ? 0 : Math.min(...this.design.map(row => row.length)),
+      };
+    },
+  },
+  methods: {
+    isLetter(id) {
+      return (id >= 1 && id <= 26) || (id >= 101 && id <= 126);
+    },
+    getLetter(id) {
+      if (id >= 101 && id <= 126) return String.fromCharCode(97 + id - 101);
+      if (id >= 1 && id <= 26) return String.fromCharCode(65 + id - 1);
+      return '';
+    },
+    isUnderLined(id) {
+      return id >= 100;
+    },
+    isCenter(i, j) {
+      return i === Math.trunc(this.size.rows / 2) && j === Math.trunc(this.size.columns / 2);
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -125,7 +153,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr 8fr 1fr;
     grid-template-rows: 1fr;
-    grid-template-areas: 
+    grid-template-areas:
     "letters tab idx";
     height: 100%;
     gap: 10px;

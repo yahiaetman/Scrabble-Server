@@ -1,0 +1,26 @@
+{
+
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true,
+        "jest/globals": true
+    },
+    "parserOptions": {
+         "parser": "babel-eslint"
+    },
+    "plugins": [
+        "jest"
+    ],
+    "extends": [
+        "airbnb-base",
+        "plugin:vue/recommended",
+        "plugin:jest/recommended"
+    ],
+    "rules": {
+        "linebreak-style": 0,
+        "no-param-reassign": ["error", { "props": false }],
+        "max-len": "off",
+        "no-console": "off"
+    }
+}

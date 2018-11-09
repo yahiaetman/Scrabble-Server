@@ -1,104 +1,151 @@
 <template>
-    <div class="window">
-        <div class="title-bar">
-            <button class="circle-button close" @click="close"></button>
-            <button class="circle-button minimize" @click="minimize"></button>
-            <button class="circle-button maximize" @click="maximize"></button>
-        </div>
-        <div class="window-content">
-            <history :history="history"/>
-            <board :board="board"/>
-            <control :ready="ready" :running="running" :clients="clients" :has-check-point="hasCheckPoint"/>
-            <score-board :status="status" :time="time" :current="current" :challenge-time="challengeTime" :awaiting-challenge="awaitingChallenge" :players="players"/>
-        </div>
+  <div class="window">
+    <div class="title-bar">
+      <button
+        class="circle-button close"
+        @click="close"/>
+      <button
+        class="circle-button minimize"
+        @click="minimize"/>
+      <button
+        class="circle-button maximize"
+        @click="maximize"/>
     </div>
+    <div class="window-content">
+      <history :history="history"/>
+      <board
+        :board="board"
+        :design="design"
+      />
+      <control
+        :ready="ready"
+        :running="running"
+        :clients="clients"
+        :has-check-point="hasCheckPoint"/>
+      <score-board
+        :status="status"
+        :time="time"
+        :current="current"
+        :challenge-time="challengeTime"
+        :awaiting-challenge="awaitingChallenge"
+        :players="players"/>
+    </div>
+  </div>
 </template>
 
 <script>
-import History from "./components/History";
-import ScoreBoard from "./components/ScoreBoard";
-import Board from "./components/Board";
-import Control from "./components/Control";
+// eslint-disable-next-line import/no-unresolved
+import History from './components/History';
+// eslint-disable-next-line import/no-unresolved
+import ScoreBoard from './components/ScoreBoard';
+// eslint-disable-next-line import/no-unresolved
+import Board from './components/Board';
+// eslint-disable-next-line import/no-unresolved
+import Control from './components/Control';
 
 export default {
-    data(){
-        return {
-            status: "Server Starting ...",
-            clients: [
-                {connected: false, index: 0, name: null, ip: ""},
-                {connected: false, index: 1, name: null, ip: ""}
-            ],
-            ready: false,
-            running: false,
-            hasCheckPoint: false,
-            board:[
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            ],
-            time: 0,
-            current: 0,
-            challengeTime: 0,
-            awaitingChallenge: false,
-            players: [
-                {name:"----", time: 0, score: 0},
-                {name:"----", time: 0, score: 0}
-            ],
-            history: []
-        }
-    },
-    mounted(){
-        ipc.on('update-server-ui', (event, data) => {
-            this.clients = data.clients;
-            this.ready = data.ready;
-            this.running = data.running;
-            this.hasCheckPoint = data.hasCheckPoint;
-        });
-        ipc.on('update-game-ui', (event, data) => {
-            this.board = data.board;
-            this.history = data.history;
-        });
-        ipc.on('update-scoreboard-ui', (event, data) => {
-            this.time = data.time;
-            this.current = data.current;
-            this.players = data.players;
-            this.challengeTime = data.challengeTime;
-            this.awaitingChallenge = data.awaitingChallenge;
-        });
-        ipc.on('update-status-ui', (event, data) => {
-            this.status = data.text;
-        });
-    },
-    methods:{
-        close(){
-            electron.remote.getCurrentWindow().close();
+  components: {
+    history: History,
+    'score-board': ScoreBoard,
+    board: Board,
+    control: Control,
+  },
+  data() {
+    return {
+      status: 'Server Starting ...',
+      clients: [
+        {
+          connected: false, index: 0, name: null, ip: '',
         },
-        minimize(){
-            electron.remote.getCurrentWindow().minimize();
+        {
+          connected: false, index: 1, name: null, ip: '',
         },
-        maximize(){
-            electron.remote.getCurrentWindow().maximize();
-        }
+      ],
+      ready: false,
+      running: false,
+      hasCheckPoint: false,
+      board: [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      ],
+      design: [
+        [4, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 4],
+        [0, 3, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 3, 0],
+        [0, 0, 3, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 0, 0],
+        [1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 1],
+        [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
+        [0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0],
+        [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
+        [4, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 1, 0, 0, 4],
+        [0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
+        [0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0],
+        [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0],
+        [1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 1],
+        [0, 0, 3, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 0, 0],
+        [0, 3, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 3, 0],
+        [4, 0, 0, 1, 0, 0, 0, 4, 0, 0, 0, 1, 0, 0, 4],
+      ],
+      time: 0,
+      current: 0,
+      challengeTime: 0,
+      awaitingChallenge: false,
+      players: [
+        { name: '----', time: 0, score: 0 },
+        { name: '----', time: 0, score: 0 },
+      ],
+      history: [],
+    };
+  },
+  mounted() {
+    window.ipc.on('set-board-design', (event, data) => {
+      this.design = data.design;
+    });
+    window.ipc.on('update-server-ui', (event, data) => {
+      this.clients = data.clients;
+      this.ready = data.ready;
+      this.running = data.running;
+      this.hasCheckPoint = data.hasCheckPoint;
+    });
+    window.ipc.on('update-game-ui', (event, data) => {
+      this.board = data.board;
+      this.history = data.history;
+    });
+    window.ipc.on('update-scoreboard-ui', (event, data) => {
+      this.time = data.time;
+      this.current = data.current;
+      this.players = data.players;
+      this.challengeTime = data.challengeTime;
+      this.awaitingChallenge = data.awaitingChallenge;
+    });
+    window.ipc.on('update-status-ui', (event, data) => {
+      this.status = data.text;
+    });
+  },
+  methods: {
+    close() {
+      window.electron.remote.getCurrentWindow().close();
     },
-    components:{
-        'history': History,
-        'score-board': ScoreBoard,
-        'board': Board,
-        'control': Control
-    }
-}
+    minimize() {
+      window.electron.remote.getCurrentWindow().minimize();
+    },
+    maximize() {
+      window.electron.remote.getCurrentWindow().maximize();
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -131,7 +178,7 @@ export default {
     display: grid;
     grid-template-rows: 80% 20%;
     grid-template-columns: 25% 75%;
-    grid-template-areas: 
+    grid-template-areas:
     "list board"
     "control score";
     gap: 10px;
@@ -144,7 +191,7 @@ export default {
 .circle-button {
     width: 10px;
     height: 10px;
-    margin-top: 0; 
+    margin-top: 0;
     padding: 0;
     border: none;
     border-radius: 10px;

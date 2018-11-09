@@ -4,6 +4,7 @@
   "description": "A 2-Player TCP Scrabble Judge",
   "main": "main.js",
   "scripts": {
+    "test": "jest",
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
@@ -30,13 +31,15 @@
     "files": [
       {
         "filter": [
-          "!.vscode${/*}", 
-          "!renderer_src${/*}", 
-          "!test${/*}", 
-          "!build${/*}", 
-          "!.gitignore", 
-          "!checkpoint*.json", 
-          "!client.js", 
+          "!.vscode${/*}",
+          "!renderer_src${/*}",
+          "!examples${/*}",
+          "!tests${/*}",
+          "!build${/*}",
+          "!.eslintrc.js",
+          "!.gitignore",
+          "!checkpoint*.json",
+          "!client.js",
           "!config.json",
           "!desktop.ini",
           "!mix-manifest.json",
@@ -57,9 +60,16 @@
     ]
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "cross-env": "^5.2.0",
     "electron": "^3.0.2",
     "electron-builder": "^20.28.4",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^22.0.0",
+    "eslint-plugin-vue": "^4.7.1",
+    "jest": "^23.6.0",
     "laravel-mix": "^2.1.14"
   },
   "dependencies": {
