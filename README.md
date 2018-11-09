@@ -16,29 +16,33 @@ Communication Details can found in [this document](https://docs.google.com/docum
 
 In the root directory, run: `npm install` to install dependencies
 
-To build renderer, run: `npm run production` (or `npm run watch` during development)
+To build renderer, run: `npm run production` (or `npm run watch` during development to automatically build after saving file changes)
 
 To run server, run: `npm run start`
 
-To test scrabble game code only, run: `node ./test/test-scrabble.js`
+To test scrabble game code only, run: `node ./examples/console-scrabble.js [seed]`
 
-To run a client, run: `node client.js [name] [port=8080] [host=127.0.0.1]`
+To run a sample client, run: `node ./examples/client.js [name] [port=8080] [host=127.0.0.1]`
+
+To run tests, run: `npm run test`
 
 To package server, run: `npm run dist`
 
 ## How to use server
 
-After running the server, run 2 clients then press play. If there is a saved checkpoint, you can press pause to start from checkpoint or renew to start from seed.
+After running the server, run 2 clients then press *Play*. If there is a saved checkpoint, you can press *Pause* to start from checkpoint or *Restart* to start from seed. If you press *Stop*, you can continue the game later.
 
 The client can play their turn using on of the following commands:
-- `PLAY column row direction tiles score`
-- `EXCHANGE tiles`
 - `PASS`
-
-where column is a letter from A to O and row is a number from 1 to 15 and direction is either "R" for Right or "D" for Down. 
+- `EXCHANGE [Tiles]` where:
+  - `Tiles` must contain at least one tile and each tile is written in Uppercase and blanks is written as an underscore.
+- `PLAY [Column] [Row] [Direction] [Tiles] [Score]` where:
+  - `Column` and `Row` is where to put the first tile. `Column` can be a letter from **A** to **O** and `Row` can be a number from **1** to **15**
+  - `Direction` defines where the remaining tiles will be placed relative to the first tile and it can **R** for Right or **D** for Down
+  - `Tiles` are the placed tile and can be a letter from **A-Z** (or **a-z** if the tile is originally a blank).
+  - `Score` is the number of points gathered by this move
 
 The client must also reply to the opponent's play with one of the following commands:
-- `OK`
-- `CHALLENGE`
-
-**NOTE:** In `EXCHANGE`, use underscore "_" to denote blank tile and In `PLAY`, use lower-case letters to denote blank tiles.
+- `OK` to approve his move.
+- `CHALLENGE` to challenge his move
+- If the challenge period ends before you send a reply, it will be considered an approval.
