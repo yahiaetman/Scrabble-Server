@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { app, BrowserWindow } = require('electron');
-const Server = require('./server');
+const Server = require('./main/server');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -21,7 +21,7 @@ function createWindow() {
   });
 
   // and load the index.html of the app.
-  win.loadFile('index.html');
+  win.loadFile('public/index.html');
 
   win.setMenu(null);
 

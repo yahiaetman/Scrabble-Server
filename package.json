@@ -16,7 +16,7 @@
   },
   "keywords": [],
   "author": "Yetman <yahiazakaria13@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "build": {
     "appId": "com.yetman.scrabble",
     "mac": {
@@ -26,26 +26,26 @@
       "target": "7z"
     },
     "directories": {
-      "output": "build"
+      "output": "dist"
     },
     "files": [
       {
         "filter": [
           "!.vscode${/*}",
-          "!renderer_src${/*}",
+          "!renderer${/*}",
           "!examples${/*}",
           "!tests${/*}",
-          "!build${/*}",
+          "!dist${/*}",
+          "!logs${/*}",
+          "!checkpoints${/*}",
           "!.eslintrc.js",
           "!.gitignore",
-          "!checkpoint*.json",
-          "!client.js",
           "!config.json",
           "!desktop.ini",
           "!mix-manifest.json",
           "!webpack.mix.js",
-          "!output.log",
           "!README.md",
+          "!LICENSE",
           "!sowpods.txt"
         ]
       }

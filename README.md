@@ -10,7 +10,7 @@ Communication Details can found in [this document](https://docs.google.com/docum
 
 ## How to run and build
 
-### Before running the server:
+### Before running or packaging the server:
 
 - To install the dependencies, run: `npm install`.
 - To build the renderer, run: `npm run production` (See [Laravel Mix](https://laravel.com/docs/5.7/mix#running-mix) for more options).
@@ -33,9 +33,9 @@ Server configuration is found in `config.json`, which contains the following con
 - `host`: can be `127.0.0.1` if the server and the client are on the same machine (useful for debugging) and must be `0.0.0.0` if the clients will run on a seperate machine (**NOTE:** you can get your machine's ip on the local network using `ipconfig`).
 - `port`: defines the port to which the server will listen.
 - `ping interval`: defines the time interval for the ping/pong handshake in the heartbeat system (Format: `MM:ss.s`).
-- `rack size`: defines the rack size for each player (should be 7 in a standard game).
+- `rack size`: defines the rack size for each player (currently must be 7).
 - `bingo`: defines the bingo bonus points (should be 50 in a standard game).
-- `design`: defines the board design. It is a 2D Array which contains the type of each square. The square types can be:
+- `design`: defines the board design. It is a 2D Array which contains the type of each square (currently, the array size must be 15x15). The square types can be:
 	- `0` - Normal Square.
 	- `1` - Double Letter Square.
 	- `2` - Triple Letter Square.

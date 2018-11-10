@@ -2,7 +2,7 @@
 desktop.ini
 
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 
@@ -23,8 +23,8 @@ package-lock.json
 mix-manifest.json
 
 #build result
-renderer_dist/
-build/
+public/
+dist/
 
 #checkpoints
 checkpoints/

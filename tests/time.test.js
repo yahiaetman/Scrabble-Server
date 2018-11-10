@@ -1,4 +1,4 @@
-const { timeparse, timeformat } = require('../utils/time');
+const { timeparse, timeformat } = require('../main/utils/time');
 
 describe('Time Parse Tests', () => {
   test('SS only string', () => {

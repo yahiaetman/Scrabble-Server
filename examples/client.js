@@ -27,10 +27,10 @@ You can quit the game at any time by pressing Ctrl+C
 const _ = require('lodash');
 const readline = require('readline');
 const WebSocket = require('ws');
-const Structs = require('../utils/structs');
-const ScrabbleUtils = require('../utils/scrabble-utils');
-const { MessageTypes, EndReasons } = require('../utils/communication-enums');
-const { timeformat } = require('../utils/time');
+const Structs = require('../main/utils/structs');
+const ScrabbleUtils = require('../main/utils/scrabble-utils');
+const { MessageTypes, EndReasons } = require('../main/utils/communication-enums');
+const { timeformat } = require('../main/utils/time');
 
 // An enum with all possible states
 const States = {

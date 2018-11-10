@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const seedrandom = require('seedrandom');
-const ScrabbleUtils = require('../utils/scrabble-utils');
+const ScrabbleUtils = require('../main/utils/scrabble-utils');
 
 describe('Rack Tests', () => {
   test('Adding letters to empty rack', () => {

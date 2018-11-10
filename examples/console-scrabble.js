@@ -21,9 +21,10 @@ If the challenge period ends before you choose a reply, it will be considered an
 
 const _ = require('lodash');
 const readline = require('readline');
-const Scrabble = require('../scrabble');
+const Scrabble = require('../main/scrabble');
 const config = require('../config.json');
-const { MessageTypes } = require('../utils/communication-enums');
+const { MessageTypes } = require('../main/utils/communication-enums');
+const { timeformat } = require('../main/utils/time');
 
 // Parse Tiles from user input to send with EXCHANGE (Tile-Format-1)
 function parseTiles(input) {
@@ -175,6 +176,7 @@ rl.on('line', (line) => {
           });
         }
         // If this is a PLAY, start the challenge timer
+        console.log(`You have ${timeformat(game.challengeTimespan)} to challenge or approve`);
         game.challengeTimer.start(game.challengeTimespan);
       } else {
         // If this is not a PLAY, unpause the game timer
