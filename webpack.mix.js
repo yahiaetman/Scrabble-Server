@@ -13,7 +13,7 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('renderer/app.js', 'public/').sourceMaps();
+mix.js('renderer/app.js', 'public/');
 mix.extract(['vue']);
 mix.sass('renderer/app.scss', 'public/');
 mix.copy('renderer/renderer.js', 'public/renderer.js');
@@ -21,6 +21,10 @@ mix.copy('renderer/index.html', 'public/index.html');
 
 mix.setPublicPath('public/');
 mix.setResourceRoot('./');
+
+if (!mix.inProduction()) {
+  mix.sourceMaps();
+}
 
 // Full API
 // mix.js(src, output);
