@@ -8,7 +8,7 @@ The server uses Websockets protocol version 13 as defined by RFC6455 (https://to
 
 Communication Details can found in [this document](https://docs.google.com/document/d/1xaKcgdv9gw6xSQahsckgkU7JAzRd757Ci6RZgYTfRhc/edit?usp=sharing).
 
-**WARNING:** When running the server, place it in a folder where is has permission to create folders and write files. This is permission is needed to save logs and checkpoints.
+**WARNING:** When running the server, place it in a folder where it has permission to create folders and write files. This permission is needed to save logs and checkpoints.
 
 ## How to run and build
 
