@@ -82,7 +82,7 @@ function displayTime(info) {
 
 // Utility function to display score info received from server
 function displayScore(info) {
-  console.log(`Your Score: ${info.score}\n`);
+  console.log(`Your Score: ${info.score}`);
   console.log(`Opponent Score: ${info.opponent}`);
 }
 
