@@ -10,8 +10,8 @@
         <div :class="['turn', {'start':(move.player==2)}, {'turn-1':(move.player==0)}, {'turn-2':(move.player==1)}, {'end':(move.player==3)}]">
           {{ move.turn }}
         </div>
-        <div class="move-text">{{ move.text }}</div>
-        <div class="result">{{ move.result }}</div>
+        <div class="move-text"><span v-html="move.text"/></div>
+        <div class="result"><span v-html="move.result"/></div>
       </div>
     </div>
   </div>
@@ -96,19 +96,19 @@ export default {
 }
 
 .start {
-  background-color: rgb(52, 199, 73);
+  background-color: darkgrey;
 }
 
 .turn-1 {
-  background-color: rgb(252, 86, 82);
+  background-color: $player-1-color;
 }
 
 .turn-2 {
-  background-color: rgb(254, 195, 66);
+  background-color: $player-2-color;
 }
 
 .end {
-  background-color: rgb(52, 91, 199);
+  background-color: darkgrey;
 }
 
 .move-text {
@@ -124,8 +124,56 @@ export default {
   grid-area: result;
   font-family: "Roboto", sans-serif;
   padding: 5px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 300;
   color: white;
+}
+
+.tag {
+  padding: 2px 5px;
+  border-radius: 5px;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+}
+
+.tag.light {
+  background-color: darkgrey;
+  color: $background-color;
+}
+
+.tag.tile-tag {
+  padding: 2px 2px;
+  background-color: antiquewhite;
+  color: $background-color;
+}
+
+.tag.tile-tag.blank {
+  text-decoration: underline;
+}
+
+.tag.failure {
+  background-color: rgb(252, 86, 82);
+  color: $background-color;
+}
+
+.tag.alert {
+  background-color: rgb(254, 195, 66);
+  color: $background-color;
+}
+
+.tag.success {
+  background-color: rgb(52, 199, 73);
+  color: $background-color;
+}
+
+.tag.player-1 {
+  background-color: $player-1-color;
+  color: $background-color;
+}
+
+.tag.player-2 {
+  background-color: $player-2-color;
+  color: $background-color;
 }
 </style>

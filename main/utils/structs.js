@@ -1,3 +1,8 @@
+/**
+ * The structs defines how to pack objects to buffers and how to unpack buffers to objects
+ * The main structures, defined in the communication document, were reduced to 9 common structures
+ */
+
 const stfu = require('struct-fu');
 
 const TypeStruct = stfu.struct([

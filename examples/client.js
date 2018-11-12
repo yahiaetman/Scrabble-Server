@@ -271,7 +271,13 @@ ws.on('message', (data) => {
       state = States.THINKING;
     }
   } else if (state === States.AWAIT_CHALLENGE_RESPONSE) {
-    if (data[0] === MessageTypes.CHALLENGE_ACCEPTED) {
+    if (data[0] === MessageTypes.NO_CHALLENGE) {
+      console.log('Challenge Time Out.');
+      const info = Structs.TypeWithTimeStruct.unpack(data);
+      displayTime(info);
+      displayCurrentGameState();
+      state = States.THINKING;
+    } else if (data[0] === MessageTypes.CHALLENGE_ACCEPTED) {
       console.log('Challenge Accepted.');
       const info = Structs.TypeWithTimeStruct.unpack(data);
       displayTime(info);

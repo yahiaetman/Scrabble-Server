@@ -108,9 +108,6 @@ export default {
   font-weight: 100;
   overflow: hidden;
   text-overflow: ellipsis;
-  //max-width: 95%;
-  //max-height: 95%;
-  //padding: 2.5%;
 }
 
 .player-turn {
@@ -123,11 +120,11 @@ export default {
 }
 
 .player-turn-1 {
-  background-color: rgb(252, 86, 82);
+  background-color: $player-1-color;
 }
 
 .player-turn-2 {
-  background-color: rgb(254, 195, 66);
+  background-color: $player-2-color;
 }
 
 .player-name {

@@ -252,21 +252,21 @@ class Server {
         case MessageTypes.START:
           return {
             player: 2,
-            turn: '-',
-            text: 'Game Start',
+            turn: '',
+            text: 'START',
             result: '',
           };
         case MessageTypes.END: {
           let resultText;
           if (result.end) {
-            resultText = _.isNull(result.winner) ? 'Draw' : `Player${result.winner + 1} won`;
+            resultText = _.isNull(result.winner) ? '<span class="tag light">Draw</span>' : `<span class="tag player-${result.winner + 1}">P-${result.winner + 1} won</span>`;
           } else {
-            resultText = 'Game Ended Abruptly';
+            resultText = '<span class="tag alert">Game Ended Abruptly<span>';
           }
           return {
             player: 3,
-            turn: '-',
-            text: 'Game End',
+            turn: '',
+            text: 'END',
             result: resultText,
           };
         }
@@ -274,45 +274,47 @@ class Server {
           return {
             player: result.player,
             turn: result.state.turn.toString(),
-            text: `Player${result.player + 1}: PASS`,
+            text: `<b>P-${result.player + 1}:</b> PASS`,
             result: '',
           };
-        case MessageTypes.EXCHANGE:
+        case MessageTypes.EXCHANGE: {
+          const count = _.filter(move.tiles, tile => tile !== 0).length;
           return {
             player: result.player,
             turn: result.state.turn.toString(),
-            text: `Player${result.player + 1}: EXCHANGE ${
-              _.filter(move.tiles, tile => tile !== 0).length
-            } Tile(s)`,
+            text: `<b>P-${result.player + 1}:</b> EXCHANGE <b>${count}</b> tile${count > 1 ? 's' : ''}`,
             result: '',
           };
+        }
         case MessageTypes.PLAY:
           return {
             player: result.player,
             turn: result.state.turn.toString(),
-            text: `Player${result.player + 1}: ${String.fromCharCode(64 + move.col)}${move.row} ${
+            text: `<b>P-${result.player + 1}:</b> <span class="tag light">${String.fromCharCode(64 + move.col)}${move.row}-${
               move.dir === 0 ? 'RIGHT' : 'DOWN'
-            } ${ScrabbleUtils.convertPlayableTilesToString(move.tiles)}`,
-            result: `${result.score > 0 ? '+' : ''}${result.score}`,
+            }</span> ${
+              ScrabbleUtils.convertPlayableTilesToString(move.tiles).split(',').map(tile => `<span class="tag tile-tag ${tile.toLowerCase() === tile ? 'blank' : ''}">${tile}</span>`).join(' ')
+            }`,
+            result: `<span class="tag success">${result.score > 0 ? '+' : ''}${result.score}</span>`,
           };
         case MessageTypes.NO_CHALLENGE:
           return {
             player: result.player,
-            turn: '-',
-            text: `Player${result.player + 1}: APPROVE`,
-            result: result.missed ? 'Challenge Missed' : '',
+            turn: '',
+            text: `<b>P-${result.player + 1}:</b> APPROVE`,
+            result: result.missed ? '<span class="tag alert">Challenge Missed</span>' : '',
           };
         case MessageTypes.CHALLENGE:
           return {
             player: result.player,
-            turn: '-',
-            text: `Player${result.player + 1}: CHALLENGE`,
-            result: result.accepted ? 'Challenge Accepted' : 'Challenge Rejected',
+            turn: '',
+            text: `<b>P-${result.player + 1}:</b> CHALLENGE`,
+            result: result.accepted ? '<span class="tag success">Challenge Accepted</span>' : '<span class="tag failure">Challenge Rejected</span>',
           };
         default:
           return {
-            player: null,
-            turn: '-',
+            player: 3,
+            turn: '',
             text: '',
             result: '',
           };
@@ -579,6 +581,7 @@ class Server {
         });
         this.updateServerUI();
       } else if (event.type === EventTypes.START) {
+        _.times(3).forEach(() => { this.logger.info(_.repeat('*', 100)); });
         if (event.data.useCheckPoint && !_.isNull(this.checkpoint)) {
           // If user pressed pause, start from a checkpoint if any exists
           this.logger.info('Starting game from a Checkpoint');
