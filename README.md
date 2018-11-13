@@ -6,7 +6,7 @@
 
 The server uses Websockets protocol version 13 as defined by RFC6455 (https://tools.ietf.org/html/rfc6455)
 
-Communication Details can found in [this document](protocol.pdf).
+Communication Details can found in [this document](docs/protocol.pdf).
 
 **WARNING:** When running the server, place it in a folder where it has permission to create folders and write files. This permission is needed to save logs and checkpoints.
 
