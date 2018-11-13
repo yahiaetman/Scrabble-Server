@@ -36,6 +36,7 @@
           "!examples${/*}",
           "!tests${/*}",
           "!dist${/*}",
+          "!docs${/*}",
           "!logs${/*}",
           "!checkpoints${/*}",
           "!.eslintrc.js",
