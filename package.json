@@ -20,9 +20,13 @@
   "build": {
     "appId": "com.yetman.scrabble",
     "mac": {
-      "category": "public.app-category.games"
+      "category": "public.app-category.games",
+      "target": "7z"
     },
     "win": {
+      "target": "7z"
+    },
+    "linux": {
       "target": "7z"
     },
     "directories": {
