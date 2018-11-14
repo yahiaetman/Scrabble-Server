@@ -36,6 +36,7 @@ Communication Details can found in [this document](docs/protocol.pdf).
 
 - To run tests, run: `npm run test`.
 - To package the server for distribution, run: `npm run dist`.
+- To package the console client into an exe, run: `npm run pack-client`.
 
 ## Configuration
 
