@@ -181,24 +181,26 @@ const ScrabbleUtils = {
       word.forEach((letter) => {
         const { tile } = letter;
         let tileScore = tile > 100 ? tileScores[100] : tileScores[tile]; // If tile is blank, then its score is usually 0
-        const squareType = design[letter.position.row][letter.position.col];
-        switch (squareType) {
-          // Double and Triple Letter Squares only affect the current tile
-          case Squares.DOUBLE_LETTER:
-            tileScore *= 2;
-            break;
-          case Squares.TRIPLE_LETTER:
-            tileScore *= 3;
-            break;
-          // Double and Triple Letter Squares affect the whole word
-          case Squares.DOUBLE_WORD:
-            wordMultiplier *= 2;
-            break;
-          case Squares.TRIPLE_WORD:
-            wordMultiplier *= 3;
-            break;
-          default:
-            break;
+        if (letter.src === 'rack') {
+          const squareType = design[letter.position.row][letter.position.col];
+          switch (squareType) {
+            // Double and Triple Letter Squares only affect the current tile
+            case Squares.DOUBLE_LETTER:
+              tileScore *= 2;
+              break;
+            case Squares.TRIPLE_LETTER:
+              tileScore *= 3;
+              break;
+            // Double and Triple Letter Squares affect the whole word
+            case Squares.DOUBLE_WORD:
+              wordMultiplier *= 2;
+              break;
+            case Squares.TRIPLE_WORD:
+              wordMultiplier *= 3;
+              break;
+            default:
+              break;
+          }
         }
         wordScore += tileScore;
       });

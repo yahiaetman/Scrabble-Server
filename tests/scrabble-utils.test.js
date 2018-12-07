@@ -615,7 +615,7 @@ describe('Score Calculation Tests', () => {
     expect(score).toBe(8);
   });
 
-  test('Two Double Letters', () => {
+  test('Two Double Letters (One already on board)', () => {
     const words = [
       [
         { tile: 10, src: 'rack', position: { col: 1, row: 1 } },
@@ -624,7 +624,31 @@ describe('Score Calculation Tests', () => {
       ],
     ];
     const score = ScrabbleUtils.calculateScore(words, design1, scores);
+    expect(score).toBe(7);
+  });
+
+  test('Two Double Letters', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 1, row: 1 } },
+        { tile: 20, src: 'rack', position: { col: 2, row: 1 } },
+        { tile: 5, src: 'rack', position: { col: 3, row: 1 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design1, scores);
     expect(score).toBe(10);
+  });
+
+  test('Triple Letter Only (One already on board)', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 2, row: 0 } },
+        { tile: 20, src: 'rack', position: { col: 3, row: 0 } },
+        { tile: 5, src: 'board', position: { col: 4, row: 0 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design1, scores);
+    expect(score).toBe(6);
   });
 
   test('Triple Letter Only', () => {
@@ -632,7 +656,7 @@ describe('Score Calculation Tests', () => {
       [
         { tile: 10, src: 'rack', position: { col: 2, row: 0 } },
         { tile: 20, src: 'rack', position: { col: 3, row: 0 } },
-        { tile: 5, src: 'board', position: { col: 4, row: 0 } },
+        { tile: 5, src: 'rack', position: { col: 4, row: 0 } },
       ],
     ];
     const score = ScrabbleUtils.calculateScore(words, design1, scores);
@@ -668,7 +692,7 @@ describe('Score Calculation Tests', () => {
       [
         { tile: 10, src: 'rack', position: { col: 0, row: 2 } },
         { tile: 20, src: 'rack', position: { col: 1, row: 2 } },
-        { tile: 5, src: 'board', position: { col: 2, row: 2 } },
+        { tile: 5, src: 'rack', position: { col: 2, row: 2 } },
         { tile: 20, src: 'rack', position: { col: 3, row: 2 } },
         { tile: 10, src: 'rack', position: { col: 4, row: 2 } },
       ],
@@ -677,7 +701,35 @@ describe('Score Calculation Tests', () => {
     expect(score).toBe(162);
   });
 
+  test('One Double Word (Alreay on board) and Two Triple Words', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 0, row: 2 } },
+        { tile: 20, src: 'rack', position: { col: 1, row: 2 } },
+        { tile: 5, src: 'board', position: { col: 2, row: 2 } },
+        { tile: 20, src: 'rack', position: { col: 3, row: 2 } },
+        { tile: 10, src: 'rack', position: { col: 4, row: 2 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design1, scores);
+    expect(score).toBe(81);
+  });
+
   test('One Triple Word and Two Triple Letters', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 4, row: 0 } },
+        { tile: 20, src: 'rack', position: { col: 4, row: 1 } },
+        { tile: 5, src: 'rack', position: { col: 4, row: 2 } },
+        { tile: 20, src: 'rack', position: { col: 4, row: 3 } },
+        { tile: 10, src: 'rack', position: { col: 4, row: 4 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design1, scores);
+    expect(score).toBe(39);
+  });
+
+  test('One Triple Word (Already on Board) and Two Triple Letters', () => {
     const words = [
       [
         { tile: 10, src: 'rack', position: { col: 4, row: 0 } },
@@ -688,10 +740,22 @@ describe('Score Calculation Tests', () => {
       ],
     ];
     const score = ScrabbleUtils.calculateScore(words, design1, scores);
-    expect(score).toBe(39);
+    expect(score).toBe(13);
   });
 
   test('One Double Word and Two Double Letters', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 2, row: 1 } },
+        { tile: 20, src: 'rack', position: { col: 2, row: 2 } },
+        { tile: 5, src: 'rack', position: { col: 2, row: 3 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design2, scores);
+    expect(score).toBe(20);
+  });
+
+  test('One Double Word and Two Double Letters (One Already on Board)', () => {
     const words = [
       [
         { tile: 10, src: 'rack', position: { col: 2, row: 1 } },
@@ -700,10 +764,22 @@ describe('Score Calculation Tests', () => {
       ],
     ];
     const score = ScrabbleUtils.calculateScore(words, design2, scores);
-    expect(score).toBe(20);
+    expect(score).toBe(14);
   });
 
   test('One Double Word and Two Triple Letters', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 1, row: 2 } },
+        { tile: 20, src: 'rack', position: { col: 2, row: 2 } },
+        { tile: 5, src: 'rack', position: { col: 3, row: 2 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design2, scores);
+    expect(score).toBe(28);
+  });
+
+  test('One Double Word and Two Triple Letters (One Already on Board)', () => {
     const words = [
       [
         { tile: 10, src: 'rack', position: { col: 1, row: 2 } },
@@ -712,10 +788,24 @@ describe('Score Calculation Tests', () => {
       ],
     ];
     const score = ScrabbleUtils.calculateScore(words, design2, scores);
-    expect(score).toBe(28);
+    expect(score).toBe(16);
   });
 
   test('One Triple Word and Two Double Letters', () => {
+    const words = [
+      [
+        { tile: 10, src: 'rack', position: { col: 4, row: 0 } },
+        { tile: 20, src: 'rack', position: { col: 4, row: 1 } },
+        { tile: 5, src: 'rack', position: { col: 4, row: 2 } },
+        { tile: 20, src: 'rack', position: { col: 4, row: 3 } },
+        { tile: 10, src: 'rack', position: { col: 4, row: 4 } },
+      ],
+    ];
+    const score = ScrabbleUtils.calculateScore(words, design2, scores);
+    expect(score).toBe(33);
+  });
+
+  test('One Triple Word (Already on Board) and Two Double Letters', () => {
     const words = [
       [
         { tile: 10, src: 'rack', position: { col: 4, row: 0 } },
@@ -726,7 +816,7 @@ describe('Score Calculation Tests', () => {
       ],
     ];
     const score = ScrabbleUtils.calculateScore(words, design2, scores);
-    expect(score).toBe(33);
+    expect(score).toBe(11);
   });
 });
 
