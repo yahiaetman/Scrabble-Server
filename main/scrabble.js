@@ -31,6 +31,8 @@ class Scrabble {
     this.rackSize = config['rack size'];
     // Bingo score (usually 50)
     this.bingo = config.bingo;
+    // Determines whether to penalize player remaining tiles in rack at the game end or not
+    this.penalizeRemainingTiles = config['penalize remaining tiles'];
     // Convert score dictionary in config to use tilecodes instead of tilenames
     this.tileScores = _.zipObject(
       ScrabbleUtils.tileCodes,
@@ -415,7 +417,7 @@ class Scrabble {
         next.players.forEach((player) => {
           player.score
             -= this.calculateTimePenalty(player.time)
-            + this.calculateRemainingTilesPenalty(player.rack);
+            + (this.penalizeRemainingTiles ? this.calculateRemainingTilesPenalty(player.rack) : 0);
         });
         const scores = _.map(next.players, player => player.score);
         // check who is the winner (0: player 1 won, 1: player 2 won, null: draw)

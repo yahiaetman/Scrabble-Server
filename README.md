@@ -47,6 +47,7 @@ Server configuration is found in `config.json`, which contains the following con
 - `ping interval`: defines the time interval for the ping/pong handshake in the heartbeat system (Format: `MM:ss.s`).
 - `rack size`: defines the rack size for each player (currently must be 7).
 - `bingo`: defines the bingo bonus points (should be 50 in a standard game).
+- `penalize remaining tiles`: determines whether to penalize player remaining tiles in rack at the game end or not.
 - `design`: defines the board design. It is a 2D Array which contains the type of each square (currently, the array size must be 15x15). The square types can be:
 	- `0` - Normal Square.
 	- `1` - Double Letter Square.
