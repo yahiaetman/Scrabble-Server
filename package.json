@@ -1,6 +1,6 @@
 {
   "name": "scrabble-server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A 2-Player TCP Scrabble Judge",
   "main": "main.js",
   "scripts": {

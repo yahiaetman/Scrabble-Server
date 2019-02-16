@@ -2,7 +2,7 @@
 
 # Scrabble-Server
 
-> Scrabble Server is a 2-Player Websockets Scrabble Judging Server. This project is made for the Fall 2018 Machine Intelligence Course (CMPN402/CMP402A) in Computer Engineering Program at Cairo University Faculty of Engineering.
+> Scrabble Server is a 2-Player Websockets Scrabble Judging Server. This project is made for the Spring 2019 Machine Intelligence Course (CMPN402) (Previously for CMPN402/CMP402A Fall 2018) in Computer Engineering Program at Cairo University Faculty of Engineering.
 
 
 [![GitHub issues](https://img.shields.io/github/issues/yahiaetman/Scrabble-Server.svg)](https://github.com/yahiaetman/Scrabble-Server/issues)

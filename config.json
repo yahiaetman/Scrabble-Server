@@ -4,7 +4,7 @@
   "ping interval": "00:01",
   "rack size": 7,
   "bingo": 50,
-  "penalize remaining tiles": false,
+  "penalize remaining tiles": true,
   "design":[
       [4,0,0,1,0,0,0,4,0,0,0,1,0,0,4],
       [0,3,0,0,0,2,0,0,0,2,0,0,0,3,0],
@@ -80,7 +80,7 @@
       "Z":1,
       "_":2
   },
-  "starting timespans": ["10", "10"],
+  "starting timespans": ["15:00", "15:00"],
   "challenge timespan": "00:05",
   "penalty":{
       "points": 10,
